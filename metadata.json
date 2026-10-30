@@ -1,0 +1,6 @@
+{
+  "name": "Green Chilly Restaurant & App - DIP Dubai",
+  "description": "Official website and mobile app for Green Chilly Restaurant in Dubai Investments Park (DIP 1). Authentic Indian, Pakistani, Arabian & Chinese cuisine, online ordering, table reservations, and rapid delivery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
