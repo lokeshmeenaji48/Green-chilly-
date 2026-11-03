@@ -1,23 +1,15 @@
 import { CartItem } from '../types';
 
-export interface CartTotals {
+export interface TablesideTotals {
   subtotal: number;
-  discount: number;
   vat: number;
-  deliveryFee: number;
   total: number;
   itemCount: number;
 }
 
 export const VAT_RATE = 0.05; // 5% UAE VAT
-export const DEFAULT_DELIVERY_FEE = 5.0; // 5 AED standard delivery in DIP
-export const FREE_DELIVERY_THRESHOLD = 50.0; // Free delivery over 50 AED
 
-export function calculateCartTotals(
-  items: CartItem[],
-  couponCode?: string,
-  deliveryType: 'delivery' | 'pickup' = 'delivery'
-): CartTotals {
+export function calculateTablesideTotals(items: CartItem[]): TablesideTotals {
   let subtotal = 0;
   let itemCount = 0;
 
@@ -31,35 +23,13 @@ export function calculateCartTotals(
     itemCount += item.quantity;
   }
 
-  // Rounded to 2 decimals
   subtotal = Math.round(subtotal * 100) / 100;
-
-  // Coupon discount
-  let discount = 0;
-  if (couponCode) {
-    const cleanCode = couponCode.trim().toUpperCase();
-    if (cleanCode === 'GREENCHILLY10' || cleanCode === 'WELCOME10') {
-      discount = Math.round(subtotal * 0.1 * 100) / 100; // 10% off
-    } else if (cleanCode === 'DIPSPECIAL' && subtotal >= 40) {
-      discount = 8.0; // 8 AED flat off
-    }
-  }
-
-  const taxableAmount = Math.max(0, subtotal - discount);
-  const vat = Math.round(taxableAmount * VAT_RATE * 100) / 100;
-
-  let deliveryFee = 0;
-  if (deliveryType === 'delivery') {
-    deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD || subtotal === 0 ? 0 : DEFAULT_DELIVERY_FEE;
-  }
-
-  const total = Math.max(0, Math.round((taxableAmount + vat + deliveryFee) * 100) / 100);
+  const vat = Math.round(subtotal * VAT_RATE * 100) / 100;
+  const total = Math.round((subtotal + vat) * 100) / 100;
 
   return {
     subtotal,
-    discount,
     vat,
-    deliveryFee,
     total,
     itemCount,
   };
@@ -71,22 +41,15 @@ export function validatePhone(phone: string): boolean {
   return digitsOnly.length >= 7 && digitsOnly.length <= 15;
 }
 
-export function validateOrderForm(data: {
-  customerName: string;
-  customerPhone: string;
-  deliveryType: 'delivery' | 'pickup';
-  deliveryAddress?: string;
+export function validateTablesideOrder(data: {
+  tableNumber: string;
+  itemCount: number;
 }): { isValid: boolean; error?: string } {
-  if (!data.customerName || data.customerName.trim().length < 2) {
-    return { isValid: false, error: 'Please enter your full name.' };
+  if (!data.tableNumber || data.tableNumber.trim() === '') {
+    return { isValid: false, error: 'Please select your Table or Family Cabin number.' };
   }
-  if (!data.customerPhone || !validatePhone(data.customerPhone)) {
-    return { isValid: false, error: 'Please enter a valid phone number (e.g., 050 123 4567).' };
-  }
-  if (data.deliveryType === 'delivery') {
-    if (!data.deliveryAddress || data.deliveryAddress.trim().length < 5) {
-      return { isValid: false, error: 'Please enter your building name or delivery address in Dubai.' };
-    }
+  if (data.itemCount <= 0) {
+    return { isValid: false, error: 'Please add at least one dish to send to the kitchen.' };
   }
   return { isValid: true };
 }
@@ -114,8 +77,4 @@ export function validateReservationForm(data: {
     return { isValid: false, error: 'Guest count must be between 1 and 50.' };
   }
   return { isValid: true };
-}
-
-export function calculateLoyaltyPoints(spendAED: number): number {
-  return Math.floor(spendAED * 2); // 2 points per 1 AED
 }

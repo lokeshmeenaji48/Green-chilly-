@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle2, Clock, Bike, ChefHat, Phone, MessageSquare, X } from 'lucide-react';
-import { Order } from '../types';
-import { RESTAURANT_INFO } from '../data/restaurantData';
+import { CheckCircle2, ChefHat, Utensils, BellRing, Receipt, X } from 'lucide-react';
+import { TablesideOrder } from '../types';
 
-interface OrderStatusModalProps {
-  order: Order | null;
+interface KitchenTicketModalProps {
+  order: TablesideOrder | null;
   onClose: () => void;
+  onRequestBill: (tableNumber: string) => void;
+  onCallWaiter: (tableNumber: string) => void;
 }
 
-export const OrderStatusModal: React.FC<OrderStatusModalProps> = ({ order, onClose }) => {
+export const KitchenTicketModal: React.FC<KitchenTicketModalProps> = ({
+  order,
+  onClose,
+  onRequestBill,
+  onCallWaiter,
+}) => {
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   useEffect(() => {
     if (!order) return;
     setCurrentStep(1);
 
-    // Simulate real kitchen progression
+    // Progression of kitchen cooking
     const timer1 = setTimeout(() => setCurrentStep(2), 2500);
     const timer2 = setTimeout(() => setCurrentStep(3), 6000);
 
@@ -28,15 +34,14 @@ export const OrderStatusModal: React.FC<OrderStatusModalProps> = ({ order, onClo
   if (!order) return null;
 
   const steps = [
-    { id: 1, label: 'Order Received', desc: 'Sent directly to Green Chilly kitchen', icon: CheckCircle2 },
-    { id: 2, label: 'Kitchen Preparing', desc: 'Fresh tandoor & wok karahi cooking', icon: ChefHat },
-    { id: 3, label: 'Out for Delivery', desc: 'Rider Muhammad on Honda 125 in DIP', icon: Bike },
-    { id: 4, label: 'Delivered', desc: 'Enjoy your hot meal!', icon: CheckCircle2 },
+    { id: 1, label: 'KOT Fired to Kitchen', desc: 'Ticket printed at chef dispatch station', icon: CheckCircle2 },
+    { id: 2, label: 'Cooking in Progress', desc: 'Charcoal tandoor & wok karahi live preparation', icon: ChefHat },
+    { id: 3, label: 'Served at Table', desc: 'Fresh hot dishes brought directly to your table', icon: Utensils },
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="bg-stone-900 border border-stone-700/80 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl space-y-5 p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+      <div className="bg-stone-900 border border-stone-700/80 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl space-y-4 sm:space-y-5 p-4 sm:p-6">
         
         {/* Header */}
         <div className="flex items-start justify-between border-b border-stone-800 pb-4">
@@ -44,14 +49,14 @@ export const OrderStatusModal: React.FC<OrderStatusModalProps> = ({ order, onClo
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                Live Order Tracking
+                Live Tableside KOT
               </span>
             </div>
             <h3 className="font-display font-bold text-xl text-white mt-1">
-              Order #{order.id}
+              Ticket #{order.id} · {order.tableNumber}
             </h3>
             <p className="text-xs text-stone-400">
-              Placed at {order.createdAt} · Est. Arrival: <strong className="text-stone-200">{order.estimatedDeliveryTime}</strong>
+              Ordered at {order.createdAt} · Est. Serve: <strong className="text-stone-200">{order.estimatedServeTime}</strong>
             </p>
           </div>
           <button
@@ -65,7 +70,7 @@ export const OrderStatusModal: React.FC<OrderStatusModalProps> = ({ order, onClo
 
         {/* Live Stepper */}
         <div className="py-2 space-y-4">
-          {steps.map((step, idx) => {
+          {steps.map((step) => {
             const Icon = step.icon;
             const isCompleted = currentStep > step.id;
             const isCurrent = currentStep === step.id;
@@ -95,7 +100,7 @@ export const OrderStatusModal: React.FC<OrderStatusModalProps> = ({ order, onClo
                     </h4>
                     {isCurrent && (
                       <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
-                        In Progress
+                        Active Station
                       </span>
                     )}
                   </div>
@@ -106,55 +111,57 @@ export const OrderStatusModal: React.FC<OrderStatusModalProps> = ({ order, onClo
           })}
         </div>
 
-        {/* Order Summary Snapshot */}
+        {/* Table Order Summary */}
         <div className="p-3.5 bg-stone-800/50 rounded-xl border border-stone-800 space-y-2 text-xs">
           <div className="flex justify-between text-stone-300">
-            <span>Customer:</span>
-            <span className="font-semibold text-white">{order.customerName} ({order.customerPhone})</span>
+            <span>Table:</span>
+            <span className="font-semibold text-white">{order.tableNumber}</span>
           </div>
-          {order.deliveryAddress && (
+          {order.guestName && (
             <div className="flex justify-between text-stone-300">
-              <span>Address:</span>
-              <span className="font-medium text-stone-200 text-right max-w-[240px] truncate">
-                {order.deliveryAddress}
-              </span>
+              <span>Guest:</span>
+              <span className="text-stone-200">{order.guestName}</span>
             </div>
           )}
           <div className="flex justify-between text-stone-300">
-            <span>Payment:</span>
-            <span className="capitalize text-stone-200">{order.paymentMethod.replace('_', ' ')}</span>
+            <span>Dishes ({order.items.reduce((s, i) => s + i.quantity, 0)}):</span>
+            <span className="text-right text-stone-300 max-w-[220px] truncate">
+              {order.items.map((i) => `${i.quantity}x ${i.menuItem.name}`).join(', ')}
+            </span>
+          </div>
+          <div className="flex justify-between text-stone-300">
+            <span>Payment Preference:</span>
+            <span className="capitalize text-stone-200">{order.paymentPreference.replace('_', ' ')}</span>
           </div>
           <div className="flex justify-between pt-1 border-t border-stone-700 text-sm font-bold text-white">
-            <span>Total Amount:</span>
+            <span>Table Bill Total:</span>
             <span className="text-emerald-400 tabular-nums">AED {order.total.toFixed(2)}</span>
           </div>
         </div>
 
-        {/* Support Actions */}
-        <div className="grid grid-cols-2 gap-3 pt-2">
-          <a
-            href={`tel:${RESTAURANT_INFO.phone}`}
+        {/* Tableside Actions */}
+        <div className="grid grid-cols-2 gap-3 pt-1">
+          <button
+            onClick={() => onCallWaiter(order.tableNumber)}
             className="flex items-center justify-center gap-2 py-2.5 px-3 bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-semibold rounded-xl border border-stone-700 transition-colors"
           >
-            <Phone className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Call Restaurant</span>
-          </a>
-          <a
-            href={`https://wa.me/971508858802?text=Hello%20Green%20Chilly,%20checking%20status%20for%20order%20${order.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
+            <BellRing className="w-3.5 h-3.5 text-amber-400" />
+            <span>Call Waiter</span>
+          </button>
+          <button
+            onClick={() => onRequestBill(order.tableNumber)}
             className="flex items-center justify-center gap-2 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow transition-colors"
           >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span>WhatsApp Dispatch</span>
-          </a>
+            <Receipt className="w-3.5 h-3.5" />
+            <span>Ask for Bill</span>
+          </button>
         </div>
 
         <button
           onClick={onClose}
           className="w-full py-2.5 text-xs text-stone-400 hover:text-stone-200 text-center transition-colors font-medium"
         >
-          Return to Menu
+          Add More Dishes to this Table
         </button>
 
       </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Phone, Clock, Navigation, Heart } from 'lucide-react';
+import { MapPin, Phone, Clock, Navigation, Utensils, Calendar } from 'lucide-react';
 import { RESTAURANT_INFO } from '../data/restaurantData';
 
 interface FooterProps {
@@ -11,7 +11,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     <footer className="bg-stone-950 border-t border-stone-800 text-stone-400 text-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10">
           
           {/* Brand & Summary */}
           <div className="space-y-3">
@@ -24,88 +24,59 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               </span>
             </div>
             <p className="text-stone-400 leading-relaxed text-xs">
-              Serving Dubai Investments Park with authentic Indian, Pakistani, Indo-Chinese and Arabian dining, charcoal tandoor, and express 30-minute delivery.
+              Dubai Investments Park’s home for authentic Indian, Pakistani, Arabian & Indo-Chinese flavors. Featuring live charcoal tandoor ovens, fresh wok karahis, tableside direct ordering, and private family cabins.
             </p>
           </div>
 
-          {/* Quick Links */}
+          {/* Core Services Navigation */}
           <div className="space-y-2">
             <h4 className="font-semibold text-white uppercase tracking-wider text-xs">
-              Explore
+              Restaurant Services
             </h4>
-            <ul className="space-y-1.5">
+            <ul className="space-y-2">
               <li>
                 <button
-                  onClick={() => onNavigate('menu')}
-                  className="hover:text-emerald-400 transition-colors"
+                  onClick={() => onNavigate('tableside')}
+                  className="flex items-center gap-2 hover:text-emerald-400 transition-colors text-left"
                 >
-                  Biryani & Rice
+                  <Utensils className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>Order on Tableside (Direct KOT)</span>
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => onNavigate('menu')}
-                  className="hover:text-emerald-400 transition-colors"
+                  onClick={() => onNavigate('booking')}
+                  className="flex items-center gap-2 hover:text-emerald-400 transition-colors text-left"
                 >
-                  Tandoori Grills & Kebabs
+                  <Calendar className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>Table Booking & Family Dining</span>
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => onNavigate('menu')}
-                  className="hover:text-emerald-400 transition-colors"
+                  onClick={() => onNavigate('location')}
+                  className="flex items-center gap-2 hover:text-emerald-400 transition-colors text-left"
                 >
-                  Peshawari Karahis
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('reservation')}
-                  className="hover:text-emerald-400 transition-colors"
-                >
-                  Family Table Booking
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('rewards')}
-                  className="hover:text-emerald-400 transition-colors"
-                >
-                  Chilly Club Rewards
+                  <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>Location, Map & Timings</span>
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Operating Hours & Delivery */}
-          <div className="space-y-2">
-            <h4 className="font-semibold text-white uppercase tracking-wider text-xs">
-              Timings & Delivery
-            </h4>
-            <div className="space-y-1 text-stone-400">
-              <p className="flex items-center gap-1.5 text-stone-300">
-                <Clock className="w-3.5 h-3.5 text-emerald-400" />
-                <span>6:00 AM – 12:00 AM Midnight</span>
-              </p>
-              <p>Every single day of the week</p>
-              <p className="pt-1 text-emerald-400">
-                Free delivery in DIP on orders over AED 50
-              </p>
-              <p className="text-[11px] text-stone-500">
-                Delivering to DIP 1, DIP 2, Dubai South, JVC & Jebel Ali
-              </p>
-            </div>
-          </div>
-
-          {/* Contact & Map */}
+          {/* Location & Timings */}
           <div className="space-y-2">
             <h4 className="font-semibold text-white uppercase tracking-wider text-xs">
               Visit Us in DIP 1
             </h4>
             <p className="text-stone-300">
-              Ground Floor, Opposite Choithrams, Dubai Investments Park 1, Dubai, UAE.
+              Ground Floor, Opposite Choithrams, Dubai Investments Park 1, Jebel Ali, Dubai.
             </p>
-            <div className="pt-1 space-y-1">
+            <p className="flex items-center gap-1.5 text-stone-300 pt-0.5">
+              <Clock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>6:00 AM – 12:00 AM (Midnight) Daily</span>
+            </p>
+            <div className="pt-1 space-y-0.5">
               <p>
                 Tel: <a href={`tel:${RESTAURANT_INFO.phone}`} className="text-white hover:underline font-semibold">{RESTAURANT_INFO.phone}</a>
               </p>
@@ -120,7 +91,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 underline font-medium pt-1"
             >
               <Navigation className="w-3 h-3" />
-              <span>Google Maps Link</span>
+              <span>Open in Google Maps</span>
             </a>
           </div>
 
@@ -130,7 +101,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="pt-6 border-t border-stone-900 flex flex-col sm:flex-row items-center justify-between gap-3 text-stone-500 text-[11px]">
           <p>© {new Date().getFullYear()} {RESTAURANT_INFO.legalName}. All rights reserved.</p>
           <p className="flex items-center gap-1">
-            <span>Prepared with passion for the DIP community</span>
+            <span>Opposite Choithrams, Dubai Investments Park 1</span>
           </p>
         </div>
 

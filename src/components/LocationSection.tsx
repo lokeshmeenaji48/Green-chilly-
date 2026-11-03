@@ -87,18 +87,18 @@ export const LocationSection: React.FC = () => {
                 </div>
               </div>
 
-              {/* Delivery coverage */}
+              {/* Dining Amenities & Landmarks */}
               <div className="pt-2 border-t border-stone-700/60">
                 <h4 className="text-xs font-bold text-stone-300 uppercase tracking-wider mb-2">
-                  Delivery Coverage Areas
+                  Dine-In Amenities & Landmarks
                 </h4>
                 <div className="flex flex-wrap gap-1.5">
-                  {RESTAURANT_INFO.deliveryZones.map((zone) => (
+                  {RESTAURANT_INFO.features.map((feature) => (
                     <span
-                      key={zone}
+                      key={feature}
                       className="text-[11px] bg-stone-900 border border-stone-700 px-2.5 py-1 rounded-md text-stone-300"
                     >
-                      {zone}
+                      {feature}
                     </span>
                   ))}
                 </div>

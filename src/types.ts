@@ -8,7 +8,7 @@ export interface MenuItem {
   spiceLevel?: 'Mild' | 'Medium' | 'Hot' | 'Extra Hot';
   isVegetarian?: boolean;
   isPopular?: boolean;
-  image: string;
+  image?: string; // Only items with dedicated unique photography include an image
   prepTime: string;
   rating: number;
   reviewCount: number;
@@ -23,45 +23,30 @@ export interface CartItem {
   specialInstructions?: string;
 }
 
-export interface Order {
-  id: string;
+export interface TablesideOrder {
+  id: string; // Kitchen Order Ticket e.g. KOT-8492
+  tableNumber: string; // e.g. "Table 4", "Family Cabin 2"
+  guestName?: string;
   items: CartItem[];
-  customerName: string;
-  customerPhone: string;
-  deliveryType: 'delivery' | 'pickup';
-  deliveryAddress?: string;
-  area?: string;
-  paymentMethod: 'cash' | 'card' | 'apple_pay';
   subtotal: number;
-  discount: number;
   vat: number;
-  deliveryFee: number;
   total: number;
-  status: 'placed' | 'kitchen' | 'out_for_delivery' | 'delivered';
+  specialKitchenNotes?: string;
+  paymentPreference: 'cash' | 'card' | 'apple_pay';
+  status: 'sent_to_kitchen' | 'cooking' | 'served' | 'bill_requested';
   createdAt: string;
-  estimatedDeliveryTime: string;
+  estimatedServeTime: string;
 }
 
 export interface TableReservation {
   id: string;
   guestName: string;
   phone: string;
-  email: string;
+  email?: string;
   date: string;
   timeSlot: string;
   guestsCount: number;
   seatingZone: 'family' | 'main' | 'terrace';
   specialRequests?: string;
-  status: 'confirmed' | 'pending';
-}
-
-export interface CustomerReview {
-  id: string;
-  author: string;
-  rating: number;
-  date: string;
-  relativeTime: string;
-  comment: string;
-  favoriteDish: string;
-  visitType: 'Dine-in' | 'Takeaway' | 'Delivery';
+  status: 'confirmed';
 }

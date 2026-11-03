@@ -58,7 +58,7 @@ export const ReservationSection: React.FC = () => {
   };
 
   return (
-    <section id="reservation" className="py-16 bg-stone-900/60 border-t border-stone-800">
+    <section id="booking" className="py-16 bg-stone-900/60 border-t border-stone-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="max-w-3xl mx-auto text-center space-y-3 mb-10">
@@ -219,7 +219,7 @@ export const ReservationSection: React.FC = () => {
               <label className="block text-xs font-semibold text-stone-300 mb-2">
                 Seating Section Preference:
               </label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                 {[
                   { id: 'family', label: 'Family Section', sub: 'Partitioned privacy' },
                   { id: 'main', label: 'Main Dining Hall', sub: 'Lively atmosphere' },
